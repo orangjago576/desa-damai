@@ -77,41 +77,47 @@ class PointOfInterestResource extends Resource
                             ->maxLength(500),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Koordinat GPS & Peta Interaktif')
-                    ->description('Klik pada peta untuk menentukan lokasi otomatis, atau ketik angka desimal koordinat manual.')
+                Forms\Components\Section::make('Peta Lokasi & Titik Koordinat')
+                    ->description('Cari nama tempat, gunakan GPS lokasi Anda saat ini, atau klik/geser pin langsung pada peta.')
                     ->schema([
-                        Forms\Components\TextInput::make('latitude')
-                            ->label('Garis Lintang (Latitude)')
-                            ->placeholder('Contoh: -7.550762')
-                            ->helperText('Wajib berada dalam wilayah kabupaten (' . self::MIN_LAT . ' s.d. ' . self::MAX_LAT . ').')
-                            ->required()
-                            ->numeric()
-                            ->rules(['numeric', 'min:' . self::MIN_LAT, 'max:' . self::MAX_LAT])
-                            ->validationMessages([
-                                'required' => 'Koordinat latitude wajib diisi.',
-                                'numeric'  => 'Latitude harus berupa angka desimal.',
-                                'min'      => 'Koordinat latitude di luar wilayah kabupaten (minimal ' . self::MIN_LAT . ').',
-                                'max'      => 'Koordinat latitude di luar wilayah kabupaten (maksimal ' . self::MAX_LAT . ').',
-                            ]),
-
-                        Forms\Components\TextInput::make('longitude')
-                            ->label('Garis Bujur (Longitude)')
-                            ->placeholder('Contoh: 110.818130')
-                            ->helperText('Wajib berada dalam wilayah kabupaten (' . self::MIN_LNG . ' s.d. ' . self::MAX_LNG . ').')
-                            ->required()
-                            ->numeric()
-                            ->rules(['numeric', 'min:' . self::MIN_LNG, 'max:' . self::MAX_LNG])
-                            ->validationMessages([
-                                'required' => 'Koordinat longitude wajib diisi.',
-                                'numeric'  => 'Longitude harus berupa angka desimal.',
-                                'min'      => 'Koordinat longitude di luar wilayah kabupaten (minimal ' . self::MIN_LNG . ').',
-                                'max'      => 'Koordinat longitude di luar wilayah kabupaten (maksimal ' . self::MAX_LNG . ').',
-                            ]),
-
                         Forms\Components\ViewField::make('map_picker')
                             ->view('filament.forms.components.map-picker')
                             ->columnSpanFull(),
-                    ])->columns(2),
+
+                        Forms\Components\Section::make('⚙️ Pengaturan Koordinat Manual (Opsional)')
+                            ->description('Input angka koordinat manual jika diperlukan (terisi otomatis saat memilih titik di peta).')
+                            ->collapsed()
+                            ->compact()
+                            ->schema([
+                                Forms\Components\TextInput::make('latitude')
+                                    ->label('Garis Lintang (Latitude)')
+                                    ->placeholder('Contoh: -5.064099')
+                                    ->helperText('Batas koordinat wilayah: ' . self::MIN_LAT . ' s.d. ' . self::MAX_LAT)
+                                    ->required()
+                                    ->numeric()
+                                    ->rules(['numeric', 'min:' . self::MIN_LAT, 'max:' . self::MAX_LAT])
+                                    ->validationMessages([
+                                        'required' => 'Koordinat latitude wajib ditentukan dari peta.',
+                                        'numeric'  => 'Latitude harus berupa angka desimal.',
+                                        'min'      => 'Koordinat di luar wilayah kabupaten (minimal ' . self::MIN_LAT . ').',
+                                        'max'      => 'Koordinat di luar wilayah kabupaten (maksimal ' . self::MAX_LAT . ').',
+                                    ]),
+
+                                Forms\Components\TextInput::make('longitude')
+                                    ->label('Garis Bujur (Longitude)')
+                                    ->placeholder('Contoh: 119.608050')
+                                    ->helperText('Batas koordinat wilayah: ' . self::MIN_LNG . ' s.d. ' . self::MAX_LNG)
+                                    ->required()
+                                    ->numeric()
+                                    ->rules(['numeric', 'min:' . self::MIN_LNG, 'max:' . self::MAX_LNG])
+                                    ->validationMessages([
+                                        'required' => 'Koordinat longitude wajib ditentukan dari peta.',
+                                        'numeric'  => 'Longitude harus berupa angka desimal.',
+                                        'min'      => 'Koordinat di luar wilayah kabupaten (minimal ' . self::MIN_LNG . ').',
+                                        'max'      => 'Koordinat di luar wilayah kabupaten (maksimal ' . self::MAX_LNG . ').',
+                                    ]),
+                            ])->columns(2)->columnSpanFull(),
+                    ]),
 
                 Forms\Components\Section::make('Foto & Deskripsi')
                     ->schema([

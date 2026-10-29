@@ -14,8 +14,17 @@ class Activity extends Model
     protected static function boot()
     {
         parent::boot();
+
         static::saving(function ($model) {
             $model->convertToWebp(['cover_image', 'og_image']);
+        });
+
+        static::saved(function () {
+            \Illuminate\Support\Facades\Cache::forget('home_activities');
+        });
+
+        static::deleted(function () {
+            \Illuminate\Support\Facades\Cache::forget('home_activities');
         });
     }
 
