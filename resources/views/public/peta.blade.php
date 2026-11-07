@@ -185,8 +185,9 @@ function petaDesaComponent() {
             const firstLng = this.allPoints[0]?.longitude || 119.608050;
 
             this.map = L.map(mapContainer, {
-                minZoom: 13,
-                maxZoom: 19
+                minZoom: 14,
+                maxZoom: 19,
+                maxBoundsViscosity: 1.0
             }).setView([firstLat, firstLng], 15);
 
             // Google Maps (Jalan)
@@ -206,18 +207,39 @@ function petaDesaComponent() {
                 'Google Maps (Satelit)': satelliteLayer
             }, null, { position: 'topright' }).addTo(this.map);
 
-            // Highlight Batas Wilayah Desa Damai dari file KMZ resmi
+            // Highlight Batas Wilayah Desa Damai dari file KMZ resmi & kunci area (maxBounds + Mask)
             fetch('{{ asset('data/desa_damai_boundary.json') }}')
                 .then(res => res.json())
                 .then(geojsonData => {
+                    const coords = geojsonData.features[0].geometry.coordinates[0];
+
+                    // Masking: Tutup area luar desa dengan overlay semi-gelap/redup
+                    // Koordinat dunia besar mencakup seluruh bumi
+                    const worldCoords = [
+                        [-90, -180],
+                        [-90, 180],
+                        [90, 180],
+                        [90, -180]
+                    ];
+                    // Hole / lubang berbentuk batas desa damai
+                    const holeCoords = coords.map(c => [c[1], c[0]]);
+
+                    L.polygon([worldCoords, holeCoords], {
+                        color: 'transparent',
+                        fillColor: '#0f172a',
+                        fillOpacity: 0.42,
+                        interactive: false
+                    }).addTo(this.map);
+
+                    // Garis batas desa damai
                     const boundaryLayer = L.geoJSON(geojsonData, {
                         style: {
-                            color: '#15803d',
-                            weight: 3,
-                            opacity: 0.9,
-                            dashArray: '6, 6',
+                            color: '#16a34a',
+                            weight: 3.5,
+                            opacity: 1,
+                            dashArray: '5, 5',
                             fillColor: '#22c55e',
-                            fillOpacity: 0.16
+                            fillOpacity: 0.08
                         },
                         onEachFeature: function(feature, layer) {
                             layer.bindTooltip(
@@ -227,10 +249,11 @@ function petaDesaComponent() {
                         }
                     }).addTo(this.map);
 
-                    // Paskan kamera peta ke batas denah desa jika dibuka
-                    if (this.allPoints.length <= 1) {
-                        this.map.fitBounds(boundaryLayer.getBounds(), { padding: [30, 30] });
-                    }
+                    const bounds = boundaryLayer.getBounds();
+                    
+                    // Kunci batas geser & zoom minimal
+                    this.map.setMaxBounds(bounds.pad(0.05));
+                    this.map.fitBounds(bounds, { padding: [15, 15] });
                 })
                 .catch(() => {});
 
@@ -283,7 +306,7 @@ function petaDesaComponent() {
                 this.markersLayer.addLayer(marker);
             });
 
-            if (bounds.length > 0 && this.map) {
+            if (bounds.length > 0 && this.map && !this.map.options.maxBounds) {
                 this.map.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 });
             }
         }

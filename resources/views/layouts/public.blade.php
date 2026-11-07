@@ -206,7 +206,10 @@
             <!-- Hak Cipta & KKN Footnote -->
             <div class="mt-12 pt-6 border-t border-surface-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-surface-500">
                 <p>© {{ date('Y') }} Pemerintah Desa {{ env('VILLAGE_NAME', 'Damai') }}. Seluruh hak cipta dilindungi.</p>
-                <p class="text-surface-400">Dikembangkan melalui Program KKN Mahasiswa</p>
+                <div class="flex items-center gap-2 text-surface-400">
+                    <img src="{{ asset('images/logo-kkn.png') }}" alt="Logo KKN-PPL Terpadu" class="w-6 h-6 object-contain flex-shrink-0 bg-white rounded-full p-0.5 shadow-xs">
+                    <span>KKN-PPL UNM Angkatan XXXIII</span>
+                </div>
             </div>
         </div>
     </footer>
