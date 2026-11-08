@@ -1,8 +1,7 @@
 {
   "version": 2,
   "framework": null,
-  "installCommand": "npm install",
-  "buildCommand": "npm run build",
+"installCommand": "npm install",  "buildCommand": "npm run build",
   "outputDirectory": "public",
   "functions": {
     "api/index.php": {
@@ -10,13 +9,7 @@
     }
   },
   "routes": [
-    {
-      "src": "/build/(.*)",
-      "dest": "/build/$1"
-    },
-    {
-      "handle": "filesystem"
-    },
+    {"handle": "filesystem"},
     {
       "src": "/(.*)",
       "dest": "/api/index.php"
