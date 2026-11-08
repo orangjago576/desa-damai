@@ -9,7 +9,7 @@
     }
   },
   "routes": [
-    {"handler": "filesystem"},
+    {"handle": "filesystem"},
     {
       "src": "/(.*)",
       "dest": "/api/index.php"
