@@ -43,6 +43,7 @@ class VillageHead extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        // PostgreSQL strict boolean: gunakan whereRaw agar tidak dikirim sebagai integer 1
+        return $query->whereRaw('"is_active" = true');
     }
 }
