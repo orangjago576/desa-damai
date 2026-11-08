@@ -1,7 +1,8 @@
 {
   "version": 2,
   "framework": null,
-"installCommand": "npm install",  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
   "outputDirectory": "public",
   "functions": {
     "api/index.php": {
@@ -9,7 +10,13 @@
     }
   },
   "routes": [
-    {"handle": "filesystem"},
+    {
+      "src": "/build/(.*)",
+      "dest": "/build/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
     {
       "src": "/(.*)",
       "dest": "/api/index.php"
@@ -17,7 +24,7 @@
   ],
   "env": {
     "APP_ENV": "production",
-    "APP_DEBUG": "false",
+    "APP_DEBUG": "true",
     "APP_CONFIG_CACHE": "/tmp/bootstrap-cache/config.php",
     "APP_EVENTS_CACHE": "/tmp/bootstrap-cache/events.php",
     "APP_PACKAGES_CACHE": "/tmp/bootstrap-cache/packages.php",

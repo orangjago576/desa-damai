@@ -26,11 +26,27 @@ Route::get('/_diag', function () {
         $out[] = 'driver pdo_pgsql: ' . (extension_loaded('pdo_pgsql') ? 'ada' : 'TIDAK ADA');
         $out[] = 'select 1: ' . json_encode(DB::select('select 1 as ok'));
         $out[] = 'activities: ' . DB::table('activities')->count();
+        
+        // Test simulasi persis PublicController::home()
+        $activities = \App\Models\Activity::with(['category', 'author'])
+            ->published()
+            ->latest('activity_date')
+            ->take(3)
+            ->get();
+        $out[] = 'eloquent activities: ' . $activities->count();
+
+        $activeVillageHead = \App\Models\VillageHead::active()->first();
+        $out[] = 'activeVillageHead: ' . ($activeVillageHead ? $activeVillageHead->name : 'none');
+
+        // Test render view
+        $view = view('welcome', compact('activities', 'activeVillageHead'))->render();
+        $out[] = 'view render: OK (length ' . strlen($view) . ')';
+
         return response(implode("\n", $out), 200)->header('Content-Type', 'text/plain');
     } catch (\Throwable $e) {
-        $out[] = get_class($e);
-        $out[] = $e->getMessage();
-        $out[] = $e->getFile() . ':' . $e->getLine();
+        $out[] = 'ERROR CLASS: ' . get_class($e);
+        $out[] = 'MESSAGE: ' . $e->getMessage();
+        $out[] = 'FILE: ' . $e->getFile() . ':' . $e->getLine();
         return response(implode("\n", $out), 500)->header('Content-Type', 'text/plain');
     }
 });
