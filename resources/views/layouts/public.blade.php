@@ -11,7 +11,6 @@
     <!-- Icons & Favicon -->
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <!-- Open Graph / Medsos -->
     <meta property="og:type" content="@yield('og_type', 'website')">

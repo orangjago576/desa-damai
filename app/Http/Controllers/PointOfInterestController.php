@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PointOfInterest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class PointOfInterestController extends Controller
@@ -40,7 +41,7 @@ class PointOfInterestController extends Controller
                 'latitude'    => (float) $poi->latitude,
                 'longitude'   => (float) $poi->longitude,
                 'description' => $poi->description,
-                'photo_url'   => $poi->photo_path ? asset('storage/' . $poi->photo_path) : null,
+                'photo_url'   => $poi->photo_path ? Storage::disk(config('filesystems.default_upload_disk'))->url($poi->photo_path) : null,
                 'gmaps_url'   => "https://www.google.com/maps?q={$poi->latitude},{$poi->longitude}",
             ];
         });

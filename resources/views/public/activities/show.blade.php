@@ -4,7 +4,7 @@
 @section('meta_description', $activity->excerpt ?? Str::limit(strip_tags($activity->content), 160))
 
 {{-- Open Graph tags khusus halaman detail --}}
-@section('og_image'){{ $activity->og_image ? asset('storage/' . $activity->og_image) : ($activity->cover_image ? asset('storage/' . $activity->cover_image) : asset('images/default-og.jpg')) }}@endsection
+@section('og_image'){{ $activity->og_image ? Storage::disk(config('filesystems.default_upload_disk'))->url($activity->og_image) : ($activity->cover_image ? Storage::disk(config('filesystems.default_upload_disk'))->url($activity->cover_image) : asset('images/default-og.jpg')) }}@endsection
 
 @push('styles')
 {{-- Styling untuk konten rich-text dari editor admin --}}
@@ -94,9 +94,9 @@
 @section('content')
 @php
     $ogImage = $activity->og_image
-        ? asset('storage/' . $activity->og_image)
+        ? Storage::disk(config('filesystems.default_upload_disk'))->url($activity->og_image)
         : ($activity->cover_image
-            ? asset('storage/' . $activity->cover_image)
+            ? Storage::disk(config('filesystems.default_upload_disk'))->url($activity->cover_image)
             : asset('images/default-og.jpg'));
     $shareUrl = urlencode(url()->current());
     $shareTitle = urlencode($activity->title);
@@ -122,7 +122,7 @@
                 @if($activity->cover_image)
                     <div class="relative aspect-[16/9] bg-surface-100">
                         <img
-                            src="{{ asset('storage/' . $activity->cover_image) }}"
+                            src="{{ Storage::disk(config('filesystems.default_upload_disk'))->url($activity->cover_image) }}"
                             alt="{{ $activity->title }}"
                             width="896"
                             height="504"
@@ -255,7 +255,7 @@
                             <div class="relative aspect-[16/10] bg-surface-100 overflow-hidden">
                                 @if($related->cover_image)
                                     <img
-                                        src="{{ asset('storage/' . $related->cover_image) }}"
+                                        src="{{ Storage::disk(config('filesystems.default_upload_disk'))->url($related->cover_image) }}"
                                         alt="{{ $related->title }}"
                                         width="400"
                                         height="250"

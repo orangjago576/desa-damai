@@ -38,7 +38,7 @@
                         <div class="bg-gradient-to-r from-primary-50 to-primary-100/50 border-b border-surface-200 p-5 sm:p-6 rounded-t-xl">
                             <div class="flex items-start gap-4">
                                 @if($institution->logo_path)
-                                    <img src="{{ asset('storage/' . $institution->logo_path) }}"
+                                    <img src="{{ Storage::disk(config('filesystems.default_upload_disk'))->url($institution->logo_path) }}"
                                          alt="Logo {{ $institution->name }}"
                                          class="w-12 h-12 sm:w-14 sm:h-14 object-contain rounded-lg bg-white border border-surface-200 p-1.5 flex-shrink-0"
                                          loading="lazy">
@@ -76,7 +76,7 @@
                                     @foreach($institution->members as $member)
                                         <div class="flex items-center gap-3 p-3 rounded-lg border border-surface-100 hover:border-primary-200 hover:bg-primary-50/30 transition-all">
                                             @if($member->photo_path)
-                                                <img src="{{ asset('storage/' . $member->photo_path) }}"
+                                                <img src="{{ Storage::disk(config('filesystems.default_upload_disk'))->url($member->photo_path) }}"
                                                      alt="{{ $member->name }}"
                                                      class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-surface-200 flex-shrink-0"
                                                      loading="lazy">

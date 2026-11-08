@@ -123,6 +123,8 @@ class PointOfInterestResource extends Resource
                     ->schema([
                         Forms\Components\FileUpload::make('photo_path')
                             ->label('Foto Lokasi')
+                            ->disk(config('filesystems.default_upload_disk'))
+                            ->visibility('public')
                             ->image()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(2048)

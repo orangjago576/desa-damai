@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -10,12 +11,15 @@ trait ConvertsImagesToWebp
 {
     /**
      * Konversi daftar field gambar ke WebP secara otomatis sebelum model disimpan.
-     * 
+     * Bekerja baik di disk lokal maupun disk cloud (S3 / Supabase Storage).
+     *
      * @param array $fields Array berisi nama field gambar, misal: ['cover_image', 'og_image']
      * @return void
      */
-    protected function convertToWebp(array $fields)
+    protected function convertToWebp(array $fields): void
     {
+        $diskName = config('filesystems.default_upload_disk', 'public');
+        $disk = Storage::disk($diskName);
         $manager = new ImageManager(new Driver());
 
         foreach ($fields as $field) {
@@ -25,28 +29,44 @@ trait ConvertsImagesToWebp
             if ($path && is_string($path) && !str_ends_with(strtolower($path), '.webp')) {
                 // Pastikan file tersebut baru berubah (kotor)
                 if ($this->isDirty($field)) {
-                    $fullPath = Storage::disk('public')->path($path);
-                    
-                    if (file_exists($fullPath)) {
+                    if ($disk->exists($path)) {
+                        $tempInput = tempnam(sys_get_temp_dir(), 'img_orig_');
+                        $tempOutput = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'img_webp_' . uniqid('', true) . '.webp';
+
                         try {
+                            // Unduh isi file dari disk ke path sementara lokal
+                            file_put_contents($tempInput, $disk->get($path));
+
                             // Baca dan konversi gambar (kualitas 80%)
-                            $image = $manager->decodePath($fullPath);
-                            
+                            $image = $manager->decodePath($tempInput);
+
                             // Ganti ekstensi path menjadi webp
                             $pathInfo = pathinfo($path);
-                            $newPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '.webp';
-                            $newFullPath = Storage::disk('public')->path($newPath);
-                            
-                            // Simpan versi webp (otomatis encode webp dari ekstensi)
-                            $image->save($newFullPath, 80);
-                            
-                            // Hapus file asli
-                            unlink($fullPath);
-                            
-                            // Update attribute ke path webp baru
+                            $dir = ($pathInfo['dirname'] === '.' || $pathInfo['dirname'] === '') ? '' : $pathInfo['dirname'] . '/';
+                            $newPath = $dir . $pathInfo['filename'] . '.webp';
+
+                            // Simpan versi webp ke file sementara
+                            $image->save($tempOutput, 80);
+
+                            // Upload file webp ke disk penyimpanan tujuan
+                            $disk->put($newPath, file_get_contents($tempOutput), 'public');
+
+                            // Hapus file asli dari disk
+                            $disk->delete($path);
+
+                            // Update attribute model ke path webp yang baru
                             $this->setAttribute($field, $newPath);
-                        } catch (\Exception $e) {
-                            // Abaikan error konversi jika gagal (biarkan format asli)
+                        } catch (\Throwable $e) {
+                            Log::warning("Gagal konversi gambar {$path} ke WebP pada model " . get_class($this) . ": " . $e->getMessage());
+                            // Fallback: biarkan file asli tetap digunakan tanpa mengubah attribute
+                        } finally {
+                            // Bersihkan file sementara
+                            if (file_exists($tempInput)) {
+                                @unlink($tempInput);
+                            }
+                            if (file_exists($tempOutput)) {
+                                @unlink($tempOutput);
+                            }
                         }
                     }
                 }

@@ -65,6 +65,8 @@ class InstitutionResource extends Resource
                             ->helperText('Dapat diatur langsung melalui urutan drag-and-drop pada tabel.'),
                         Forms\Components\FileUpload::make('logo_path')
                             ->label('Logo / Lambang Lembaga')
+                            ->disk(config('filesystems.default_upload_disk'))
+                            ->visibility('public')
                             ->image()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(2048)

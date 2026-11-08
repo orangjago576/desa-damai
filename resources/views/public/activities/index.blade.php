@@ -101,7 +101,7 @@
                         <div class="relative aspect-[16/10] bg-surface-100 overflow-hidden">
                             @if($activity->cover_image)
                                 <img
-                                    src="{{ asset('storage/' . $activity->cover_image) }}"
+                                    src="{{ Storage::disk(config('filesystems.default_upload_disk'))->url($activity->cover_image) }}"
                                     alt="{{ $activity->title }}"
                                     width="400"
                                     height="250"

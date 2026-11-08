@@ -42,6 +42,8 @@ class VillageHeadResource extends Resource
                             ->maxLength(255),
                         Forms\Components\FileUpload::make('photo_path')
                             ->label('Foto Resmi')
+                            ->disk(config('filesystems.default_upload_disk'))
+                            ->visibility('public')
                             ->image()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(2048)

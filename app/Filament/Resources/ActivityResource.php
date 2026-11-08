@@ -122,6 +122,8 @@ class ActivityResource extends Resource
                     ->schema([
                         Forms\Components\FileUpload::make('cover_image')
                             ->label('Gambar Sampul (Cover)')
+                            ->disk(config('filesystems.default_upload_disk'))
+                            ->visibility('public')
                             ->image()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(2048)
@@ -133,6 +135,8 @@ class ActivityResource extends Resource
                             ]),
                         Forms\Components\FileUpload::make('og_image')
                             ->label('Gambar Khusus Medsos (OG Image)')
+                            ->disk(config('filesystems.default_upload_disk'))
+                            ->visibility('public')
                             ->image()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(2048)

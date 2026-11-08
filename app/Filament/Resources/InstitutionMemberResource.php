@@ -69,6 +69,8 @@ class InstitutionMemberResource extends Resource
                             ->helperText('Bisa juga diurutkan melalui drag-and-drop pada daftar tabel.'),
                         Forms\Components\FileUpload::make('photo_path')
                             ->label('Foto Anggota')
+                            ->disk(config('filesystems.default_upload_disk'))
+                            ->visibility('public')
                             ->image()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(2048)

@@ -34,7 +34,7 @@
                     <x-card class="!bg-white/95 backdrop-blur-md text-surface-900 border-none shadow-xl">
                         <div class="flex items-center gap-3 mb-3">
                             @if(isset($activeVillageHead) && $activeVillageHead->photo_path)
-                                <img src="{{ asset('storage/' . $activeVillageHead->photo_path) }}" alt="Foto Kepala Desa" class="w-10 h-10 rounded-full object-cover">
+                                <img src="{{ Storage::disk(config('filesystems.default_upload_disk'))->url($activeVillageHead->photo_path) }}" alt="Foto Kepala Desa" class="w-10 h-10 rounded-full object-cover">
                             @else
                                 <div class="w-10 h-10 rounded-full bg-primary-100 text-primary-800 flex items-center justify-center text-lg font-bold">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
@@ -75,7 +75,7 @@
                             <div class="relative aspect-[16/10] bg-surface-100 overflow-hidden">
                                 @if($activity->cover_image)
                                     <img 
-                                        src="{{ asset('storage/' . $activity->cover_image) }}" 
+                                        src="{{ Storage::disk(config('filesystems.default_upload_disk'))->url($activity->cover_image) }}" 
                                         alt="{{ $activity->title }}" 
                                         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                         loading="lazy"

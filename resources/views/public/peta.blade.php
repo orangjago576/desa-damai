@@ -102,7 +102,7 @@
                              class="bg-white rounded-xl border border-surface-200 p-4 shadow-xs hover:border-primary-300 transition-all flex flex-col justify-between">
                             <div class="space-y-2">
                                 @if($poi->photo_path)
-                                    <img src="{{ asset('storage/' . $poi->photo_path) }}" 
+                                    <img src="{{ Storage::disk(config('filesystems.default_upload_disk'))->url($poi->photo_path) }}" 
                                          alt="{{ $poi->name }}" 
                                          class="w-full h-36 object-cover rounded-lg mb-2" 
                                          loading="lazy">
