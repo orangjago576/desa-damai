@@ -92,8 +92,8 @@
                             {{-- Konten Kartu --}}
                             <div class="p-4 sm:p-5 flex flex-col flex-1 space-y-3">
                                 <div class="flex justify-between items-center">
-                                    <x-badge variant="primary" size="sm">{{ $activity->category->name ?? 'Umum' }}</x-badge>
-                                    <span class="text-[11px] text-surface-400">{{ $activity->activity_date->translatedFormat('d M Y') }}</span>
+                                    <x-badge variant="primary" size="sm">{{ $activity->category?->name ?? 'Umum' }}</x-badge>
+                                    <span class="text-[11px] text-surface-400">{{ $activity->activity_date?->format('d M Y') ?? '-' }}</span>
                                 </div>
                                 <h3 class="text-sm sm:text-base font-bold text-surface-900 group-hover:text-primary-700 transition-colors line-clamp-2 leading-snug">
                                     {{ $activity->title }}
@@ -102,7 +102,7 @@
                                     {{ $activity->excerpt ?? Str::limit(strip_tags($activity->content), 100) }}
                                 </p>
                                 <div class="pt-3 border-t border-surface-100 flex items-center justify-between text-xs">
-                                    <span class="text-surface-500">Oleh: {{ $activity->author->name ?? 'Admin' }}</span>
+                                    <span class="text-surface-500">Oleh: {{ $activity->author?->name ?? 'Admin' }}</span>
                                     <span class="font-semibold text-primary-700 group-hover:underline flex items-center gap-1">
                                         Baca Selengkapnya &rarr;
                                     </span>

@@ -136,13 +136,13 @@
                     {{-- Meta Informasi --}}
                     <div class="space-y-4">
                         <div class="flex flex-wrap items-center gap-2 text-xs text-surface-500">
-                            <x-badge variant="primary" size="md">{{ $activity->category->name ?? 'Umum' }}</x-badge>
+                            <x-badge variant="primary" size="md">{{ $activity->category?->name ?? 'Umum' }}</x-badge>
 
                             <span class="flex items-center gap-1">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
-                                {{ $activity->activity_date->translatedFormat('l, d F Y') }}
+                                {{ $activity->activity_date?->format('l, d F Y') ?? '-' }}
                             </span>
 
                             @if($activity->location)
@@ -182,12 +182,12 @@
                     <div class="flex flex-wrap items-center justify-between gap-4 text-xs text-surface-500">
                         <div class="flex items-center gap-2">
                             <div class="w-8 h-8 rounded-full bg-primary-100 text-primary-800 flex items-center justify-center text-sm font-bold flex-shrink-0">
-                                {{ strtoupper(substr($activity->author->name ?? 'A', 0, 1)) }}
+                                {{ strtoupper(substr($activity->author?->name ?? 'A', 0, 1)) }}
                             </div>
                             <div>
-                                <span class="font-semibold text-surface-700">{{ $activity->author->name ?? 'Admin Desa' }}</span>
+                                <span class="font-semibold text-surface-700">{{ $activity->author?->name ?? 'Admin Desa' }}</span>
                                 @if($activity->published_at)
-                                    <span class="text-surface-400">&middot; Diterbitkan {{ $activity->published_at->translatedFormat('d M Y, H:i') }} WIB</span>
+                                    <span class="text-surface-400">&middot; Diterbitkan {{ $activity->published_at?->format('d M Y, H:i') ?? '-' }} WIB</span>
                                 @endif
                             </div>
                         </div>
@@ -243,7 +243,7 @@
             <div class="mt-10 sm:mt-12">
                 <x-section-heading
                     title="Kegiatan Terkait"
-                    subtitle="Kegiatan lain dari kategori {{ $activity->category->name ?? 'yang sama' }}"
+                    subtitle="Kegiatan lain dari kategori {{ $activity->category?->name ?? 'yang sama' }}"
                     actionUrl="{{ route('activities.index', ['kategori' => $activity->category->slug ?? '']) }}"
                     actionText="Lihat Semua"
                 />
@@ -272,8 +272,8 @@
                             </div>
                             <div class="p-4 flex flex-col flex-1 space-y-2">
                                 <div class="flex justify-between items-center">
-                                    <x-badge variant="primary" size="sm">{{ $related->category->name ?? 'Umum' }}</x-badge>
-                                    <span class="text-[11px] text-surface-400">{{ $related->activity_date->translatedFormat('d M Y') }}</span>
+                                    <x-badge variant="primary" size="sm">{{ $related->category?->name ?? 'Umum' }}</x-badge>
+                                    <span class="text-[11px] text-surface-400">{{ $related->activity_date?->format('d M Y') ?? '-' }}</span>
                                 </div>
                                 <h3 class="text-sm font-bold text-surface-900 group-hover:text-primary-700 transition-colors line-clamp-2 leading-snug flex-1">
                                     {{ $related->title }}
