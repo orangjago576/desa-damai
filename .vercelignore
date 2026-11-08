@@ -27,3 +27,5 @@ pint.json
 .vscode
 .DS_Store
 Thumbs.db
+public/index.php
+public/.htaccess

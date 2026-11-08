@@ -41,4 +41,11 @@ $_SERVER['APP_ROUTES_CACHE'] = $_SERVER['APP_ROUTES_CACHE'] ?? $_ENV['APP_ROUTES
 $_SERVER['APP_EVENTS_CACHE'] = $_SERVER['APP_EVENTS_CACHE'] ?? $_ENV['APP_EVENTS_CACHE'];
 $_SERVER['VIEW_COMPILED_PATH'] = $_SERVER['VIEW_COMPILED_PATH'] ?? $_ENV['VIEW_COMPILED_PATH'];
 
-require __DIR__ . '/../public/index.php';
+if (!defined('LARAVEL_START')) {
+    define('LARAVEL_START', microtime(true));
+}
+
+require __DIR__ . '/../vendor/autoload.php';
+
+(require_once __DIR__ . '/../bootstrap/app.php')
+    ->handleRequest(\Illuminate\Http\Request::capture());
