@@ -10,6 +10,7 @@ $directories = [
     $vercelTmp . '/storage/app',
     $vercelTmp . '/storage/app/private',
     $vercelTmp . '/storage/app/public',
+    $vercelTmp . '/storage/app/purifier',
     $vercelTmp . '/storage/framework',
     $vercelTmp . '/storage/framework/cache',
     $vercelTmp . '/storage/framework/cache/data',

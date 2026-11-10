@@ -42,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
             $storagePath.'/app',
             $storagePath.'/app/private',
             $storagePath.'/app/public',
+            $storagePath.'/app/purifier',
             $storagePath.'/framework',
             $storagePath.'/framework/cache',
             $storagePath.'/framework/cache/data',
@@ -64,6 +65,7 @@ class AppServiceProvider extends ServiceProvider
             'session.files' => $storagePath.'/framework/sessions',
             'filesystems.disks.local.root' => $storagePath.'/app/private',
             'filesystems.disks.public.root' => $storagePath.'/app/public',
+            'purifier.cachePath' => $storagePath.'/app/purifier',
         ]);
     }
 }
