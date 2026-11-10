@@ -22,6 +22,13 @@ class AppServiceProvider extends ServiceProvider
     {
         if (env('VERCEL') || config('app.env') === 'production' || isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
             URL::forceScheme('https');
+
+            // Selalu gunakan host domain aktif saat ini agar CSS/JS tidak terblokir cross-origin
+            $host = request()->header('X-Forwarded-Host') ?? request()->header('Host') ?? $_SERVER['HTTP_HOST'] ?? null;
+            if ($host) {
+                URL::forceRootUrl('https://' . $host);
+            }
+            config(['app.asset_url' => null]);
         }
     }
 
