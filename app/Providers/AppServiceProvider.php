@@ -14,6 +14,13 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->configureVercelRuntime();
+
+        // Daftarkan resolver path root-relative untuk Vite sedini mungkin
+        $this->app->singleton(\Illuminate\Foundation\Vite::class, function () {
+            $vite = new \Illuminate\Foundation\Vite();
+            $vite->createAssetPathsUsing(fn ($path) => '/' . ltrim($path, '/'));
+            return $vite;
+        });
     }
 
     /**
@@ -29,13 +36,11 @@ class AppServiceProvider extends ServiceProvider
                 URL::forceRootUrl('https://' . $host);
             }
             config(['app.asset_url' => null]);
-
-            // Buat path aset Vite selalu menggunakan path root relatif (/build/assets/...)
-            // agar berjalan di domain produksi, preview Vercel, maupun custom domain tanpa isu CORS
-            Vite::createAssetPathsUsing(function (string $path): string {
-                return '/' . ltrim($path, '/');
-            });
         }
+
+        // Pastikan instance Vite yang sudah aktif juga menggunakan root-relative path
+        $this->app->make(\Illuminate\Foundation\Vite::class)
+            ->createAssetPathsUsing(fn ($path) => '/' . ltrim($path, '/'));
     }
 
     private function configureVercelRuntime(): void
