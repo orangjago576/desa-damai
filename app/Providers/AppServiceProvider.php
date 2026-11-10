@@ -62,6 +62,8 @@ class AppServiceProvider extends ServiceProvider
             'view.compiled' => $viewPath,
             'cache.stores.file.path' => $storagePath.'/framework/cache/data',
             'session.files' => $storagePath.'/framework/sessions',
+            'filesystems.disks.local.root' => $storagePath.'/app/private',
+            'filesystems.disks.public.root' => $storagePath.'/app/public',
         ]);
     }
 }
