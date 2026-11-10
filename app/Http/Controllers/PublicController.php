@@ -81,7 +81,7 @@ class PublicController extends Controller
     {
         $institutions = Cache::remember('institutions_list', 3600, function () {
             return Institution::with(['members' => function ($query) {
-                $query->orderBy('sort_order', 'asc');
+                $query->orderBy('order', 'asc');
             }])->get();
         });
 
