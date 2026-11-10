@@ -8,8 +8,11 @@ $vercelTmp = '/tmp';
 $directories = [
     $vercelTmp . '/storage',
     $vercelTmp . '/storage/app',
+    $vercelTmp . '/storage/app/livewire-tmp',
     $vercelTmp . '/storage/app/private',
+    $vercelTmp . '/storage/app/private/livewire-tmp',
     $vercelTmp . '/storage/app/public',
+    $vercelTmp . '/storage/app/public/livewire-tmp',
     $vercelTmp . '/storage/app/purifier',
     $vercelTmp . '/storage/framework',
     $vercelTmp . '/storage/framework/cache',

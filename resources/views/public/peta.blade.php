@@ -60,20 +60,11 @@
             @endforeach
         </div>
 
-        <!-- Container Peta Interaktif (Lazy Loaded via x-intersect / scroll) -->
+        <!-- Container Peta Interaktif -->
         <div class="bg-white rounded-xl border border-surface-200 shadow-sm overflow-hidden p-2">
-            <div x-intersect.once="lazyLoadMap()" class="relative">
+            <div class="relative">
                 <div x-ref="mapContainer" 
-                     class="w-full h-[400px] sm:h-[500px] rounded-lg bg-surface-100 z-0 flex items-center justify-center text-surface-500">
-                    <template x-if="!isLoaded">
-                        <div class="flex flex-col items-center gap-2 p-6 text-center">
-                            <svg class="w-8 h-8 text-primary-600 animate-spin" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            <span class="text-xs font-semibold text-surface-600">Memuat Peta Interaktif Desa...</span>
-                        </div>
-                    </template>
+                     class="w-full h-[400px] sm:h-[500px] rounded-lg bg-surface-100 z-0">
                 </div>
             </div>
         </div>
@@ -147,6 +138,8 @@
     </div>
 </div>
 
+@push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 function petaDesaComponent() {
     return {
@@ -155,37 +148,24 @@ function petaDesaComponent() {
         filteredPoints: [],
         map: null,
         markersLayer: null,
-        isLoaded: false,
 
         init() {
             this.filteredPoints = this.allPoints;
-        },
-
-        lazyLoadMap() {
-            if (this.isLoaded) return;
-            this.isLoaded = true;
-
-            if (typeof L === 'undefined') {
-                const script = document.createElement('script');
-                script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-                script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
-                script.crossOrigin = '';
-                script.onload = () => this.buildLeafletMap();
-                document.head.appendChild(script);
-            } else {
+            this.$nextTick(() => {
                 this.buildLeafletMap();
-            }
+            });
         },
 
         buildLeafletMap() {
             const mapContainer = this.$refs.mapContainer;
             if (!mapContainer || this.allPoints.length === 0) return;
+            if (this.map) return;
 
             const firstLat = this.allPoints[0]?.latitude || -5.064099;
             const firstLng = this.allPoints[0]?.longitude || 119.608050;
 
             this.map = L.map(mapContainer, {
-                minZoom: 14,
+                minZoom: 13,
                 maxZoom: 19,
                 maxBoundsViscosity: 1.0
             }).setView([firstLat, firstLng], 15);
@@ -213,15 +193,12 @@ function petaDesaComponent() {
                 .then(geojsonData => {
                     const coords = geojsonData.features[0].geometry.coordinates[0];
 
-                    // Masking: Tutup area luar desa dengan overlay semi-gelap/redup
-                    // Koordinat dunia besar mencakup seluruh bumi
                     const worldCoords = [
                         [-90, -180],
                         [-90, 180],
                         [90, 180],
                         [90, -180]
                     ];
-                    // Hole / lubang berbentuk batas desa damai
                     const holeCoords = coords.map(c => [c[1], c[0]]);
 
                     L.polygon([worldCoords, holeCoords], {
@@ -231,7 +208,6 @@ function petaDesaComponent() {
                         interactive: false
                     }).addTo(this.map);
 
-                    // Garis batas desa damai
                     const boundaryLayer = L.geoJSON(geojsonData, {
                         style: {
                             color: '#16a34a',
@@ -250,8 +226,6 @@ function petaDesaComponent() {
                     }).addTo(this.map);
 
                     const bounds = boundaryLayer.getBounds();
-                    
-                    // Kunci batas geser & zoom minimal
                     this.map.setMaxBounds(bounds.pad(0.05));
                     this.map.fitBounds(bounds, { padding: [15, 15] });
                 })
@@ -259,6 +233,10 @@ function petaDesaComponent() {
 
             this.markersLayer = L.layerGroup().addTo(this.map);
             this.renderMarkers();
+
+            setTimeout(() => {
+                this.map.invalidateSize();
+            }, 300);
         },
 
         filterCategory(cat) {
@@ -313,4 +291,5 @@ function petaDesaComponent() {
     };
 }
 </script>
+@endpush
 @endsection

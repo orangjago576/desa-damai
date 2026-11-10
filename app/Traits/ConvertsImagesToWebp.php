@@ -18,9 +18,21 @@ trait ConvertsImagesToWebp
      */
     protected function convertToWebp(array $fields): void
     {
+        // Vercel serverless functions tidak menyertakan ekstensi GD / Imagick.
+        // Lewati konversi jika tidak ada driver gambar yang tersedia.
+        if (!extension_loaded('gd') && !extension_loaded('imagick')) {
+            return;
+        }
+
         $diskName = config('filesystems.default_upload_disk', 'public');
         $disk = Storage::disk($diskName);
-        $manager = new ImageManager(new Driver());
+
+        try {
+            $manager = new ImageManager(new Driver());
+        } catch (\Throwable $e) {
+            Log::warning("Gagal inisialisasi ImageManager: " . $e->getMessage());
+            return;
+        }
 
         foreach ($fields as $field) {
             $path = $this->getAttribute($field);

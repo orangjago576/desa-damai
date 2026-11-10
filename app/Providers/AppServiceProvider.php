@@ -40,8 +40,11 @@ class AppServiceProvider extends ServiceProvider
         foreach ([
             $storagePath,
             $storagePath.'/app',
+            $storagePath.'/app/livewire-tmp',
             $storagePath.'/app/private',
+            $storagePath.'/app/private/livewire-tmp',
             $storagePath.'/app/public',
+            $storagePath.'/app/public/livewire-tmp',
             $storagePath.'/app/purifier',
             $storagePath.'/framework',
             $storagePath.'/framework/cache',
