@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,12 +24,17 @@ class AppServiceProvider extends ServiceProvider
         if (env('VERCEL') || config('app.env') === 'production' || isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
             URL::forceScheme('https');
 
-            // Selalu gunakan host domain aktif saat ini agar CSS/JS tidak terblokir cross-origin
             $host = request()->header('X-Forwarded-Host') ?? request()->header('Host') ?? $_SERVER['HTTP_HOST'] ?? null;
             if ($host) {
                 URL::forceRootUrl('https://' . $host);
             }
             config(['app.asset_url' => null]);
+
+            // Buat path aset Vite selalu menggunakan path root relatif (/build/assets/...)
+            // agar berjalan di domain produksi, preview Vercel, maupun custom domain tanpa isu CORS
+            Vite::createAssetPathsUsing(function (string $path): string {
+                return '/' . ltrim($path, '/');
+            });
         }
     }
 
