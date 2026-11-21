@@ -53,9 +53,13 @@
             <div class="flex justify-between items-center h-16 sm:h-20">
                 <!-- Logo & Identitas Desa -->
                 <a href="{{ url('/') }}" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-primary-700 text-white flex items-center justify-center font-bold text-lg sm:text-xl shadow-xs group-hover:bg-primary-800 transition-colors flex-shrink-0">
-                        🏛️
-                    </div>
+                    @php
+                        $villageProfile = \App\Models\VillageProfile::first();
+                        $logoUrl = $villageProfile && $villageProfile->logo_path
+                            ? \Illuminate\Support\Facades\Storage::disk(config('filesystems.default_upload_disk'))->url($villageProfile->logo_path)
+                            : asset('images/Logo-Kabupaten-Maros-Format-PNG.webp');
+                    @endphp
+                    <img src="{{ $logoUrl }}" alt="Logo Desa {{ env('VILLAGE_NAME', 'Damai') }}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover shadow-xs group-hover:opacity-90 transition-opacity flex-shrink-0">
                     <div class="flex flex-col">
                         <span class="text-base sm:text-lg font-extrabold text-surface-900 leading-tight group-hover:text-primary-700 transition-colors">
                             Desa {{ env('VILLAGE_NAME', 'Damai') }}
@@ -156,9 +160,13 @@
                 <!-- Kolom 1: Identitas Resmi -->
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-primary-700 text-white flex items-center justify-center font-bold text-lg">
-                            🏛️
-                        </div>
+                        @php
+                            $villageProfile = \App\Models\VillageProfile::first();
+                            $logoUrl = $villageProfile && $villageProfile->logo_path
+                                ? \Illuminate\Support\Facades\Storage::disk(config('filesystems.default_upload_disk'))->url($villageProfile->logo_path)
+                                : asset('images/Logo-Kabupaten-Maros-Format-PNG.webp');
+                        @endphp
+                        <img src="{{ $logoUrl }}" alt="Logo Desa {{ env('VILLAGE_NAME', 'Damai') }}" class="w-10 h-10 rounded-lg object-cover">
                         <div>
                             <h3 class="text-base font-bold text-white leading-tight">Pemerintah Desa {{ env('VILLAGE_NAME', 'Damai') }}</h3>
                             <p class="text-xs text-surface-400">Kec. {{ env('VILLAGE_DISTRICT', 'Tanralili') }}, Kab. {{ env('VILLAGE_REGENCY', 'Maros') }}</p>
@@ -206,7 +214,7 @@
             <div class="mt-12 pt-6 border-t border-surface-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-surface-500">
                 <p>© {{ date('Y') }} Pemerintah Desa {{ env('VILLAGE_NAME', 'Damai') }}. Seluruh hak cipta dilindungi.</p>
                 <div class="flex items-center gap-2 text-surface-400">
-                    <img src="{{ asset('images/logo-kkn.png') }}" alt="Logo KKN-PPL Terpadu" class="w-6 h-6 object-contain flex-shrink-0 bg-white rounded-full p-0.5 shadow-xs">
+                    <img src="{{ asset('images/Logo-Kabupaten-Maros-Format-PNG.webp') }}" alt="Logo Kabupaten Maros" class="w-6 h-6 object-contain flex-shrink-0 bg-white rounded-full p-0.5 shadow-xs">
                     <span>KKN-PPL UNM Angkatan XXXIII</span>
                 </div>
             </div>
