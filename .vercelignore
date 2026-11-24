@@ -1,7 +1,6 @@
 .git
 .github
 node_modules
-vendor
 tests
 storage/*.key
 storage/logs/*
@@ -27,5 +26,3 @@ pint.json
 .vscode
 .DS_Store
 Thumbs.db
-public/index.php
-public/.htaccess
